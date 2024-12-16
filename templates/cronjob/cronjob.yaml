@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-connector
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: kubeyield
+    meta.helm.sh/release-namespace: default
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mongodb-connector
+            image: python:3.9
+            command: ["sh", "-c"]
+            args:
+              - |
+                pip install "pymongo" &&
+                python /cronjob/python-scripts/cronjob.py
+            env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-uri
+                  key: URI
+            volumeMounts:
+              - name: python-scripts
+                mountPath: /cronjob/python-scripts
+          restartPolicy: OnFailure
+          volumes:
+          - name: python-scripts
+            configMap:
+              name: mongodb-cronjob-py
+              # defaultMode: 0o550

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deployment
+  labels:
+    app: front
+    kind: deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kubeyield-front
+  template:
+    metadata:
+      labels:
+        app: kubeyield-front
+        type: front
+    spec:
+      containers:
+      - name: front
+        image: codingleo1979/lettertofuture_frontend:v1.0.1
+        ports:
+        - containerPort: 80
+        env:
+        - name: BACKEND_URL
+          value: "http://back-service"
