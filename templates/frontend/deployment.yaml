@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: front
-        image: codingleo1979/lettertofuture_frontend:v1.0.1
+        image: jh0101/front-app:latest
         ports:
         - containerPort: 80
         env:
